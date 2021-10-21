@@ -1,0 +1,5 @@
+2021-10-15 09:22:43.372 [main] INFO  org.example.App - first environment property
+2021-10-15 09:29:48.781 [main] INFO  org.example.App - another environment property
+2021-10-15 09:30:43.137 [main] INFO  org.example.App - first environment property
+2021-10-15 09:33:29.821 [main] INFO  org.example.App - first environment property
+2021-10-15 09:33:41.196 [main] INFO  org.example.App - another environment property
