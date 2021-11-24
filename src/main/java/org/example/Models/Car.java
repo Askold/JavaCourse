@@ -1,57 +1,111 @@
 package org.example.Models;
 
+import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
-@Data
-@NoArgsConstructor
-public class Car {
+import java.io.Serializable;
+import java.util.Objects;
+
+@Root(name = "Car")
+public class Car implements Serializable {
+
+    @CsvBindByName
     @CsvBindByPosition(position = 0)
-    private static int ID;
+    @Attribute
+    private long id = System.currentTimeMillis() + count;
+
+    @CsvBindByName
     @CsvBindByPosition(position = 1)
-    private static String Brand;
+    @Element(name = "Brand")
+    private String brand;
+
+    @CsvBindByName
     @CsvBindByPosition(position = 2)
-    private static String Model;
+    @Element(name = "Model")
+    private String model;
+
+    @CsvBindByName
     @CsvBindByPosition(position = 3)
-    private static int Price;
+    @Element(name = "Price")
+    private int price;
 
-    public static String getBrand() {
-        return Brand;
+    private static int count = 0;
+
+    public Car(String Brand, String Model, int Price) {
+        this.brand = Brand;
+        this.model = Model;
+        this.price = Price;
+        count++;
     }
 
-    public static void setBrand(String brand) {
-        Brand = brand;
+    public Car(long id, String brand, String model, int price) {
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        this.price = price;
+        count++;
     }
 
-    public static String getModel() {
-        return Model;
+    public Car() {
+        count++;
     }
 
-    public static void setModel(String model) {
-        Model = model;
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", price=" + price +
+                '}';
     }
 
-    public static int getPrice() {
-        return Price;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return id == car.id && price == car.price && Objects.equals(brand, car.brand) && Objects.equals(model, car.model);
     }
 
-    public static void setID(int ID) {
-        Car.ID = ID;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, brand, model, price);
     }
 
-    public static int getID() {
-        return ID;
+    public long getId() {
+        return id;
     }
 
-    public static void setPrice(int price) {
-        Car.Price = price;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Car(int ID, String Brand, String Model, int Price) {
-        Car.ID = ID;
-        Car.Brand = Brand;
-        Car.Model = Model;
-        Car.Price = Price;
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

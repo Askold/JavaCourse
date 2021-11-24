@@ -1,0 +1,22 @@
+<carsList>
+   <Car id="1637301160480">
+      <Brand>Toyota</Brand>
+      <Model>Corolla</Model>
+      <Price>150</Price>
+   </Car>
+   <Car id="1637301160481">
+      <Brand>Lexus</Brand>
+      <Model>IS250</Model>
+      <Price>250</Price>
+   </Car>
+   <Car id="1637301160482">
+      <Brand>BMW</Brand>
+      <Model>M3</Model>
+      <Price>300</Price>
+   </Car>
+   <Car id="1637301176552">
+      <Brand>Kia</Brand>
+      <Model>Ceratto</Model>
+      <Price>300</Price>
+   </Car>
+</carsList>

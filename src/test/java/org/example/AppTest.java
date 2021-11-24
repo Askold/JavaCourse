@@ -1,10 +1,12 @@
 package org.example;
 
-import static org.junit.Assert.assertTrue;
-
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple App.
@@ -21,7 +23,7 @@ public class AppTest
     }
 
     @Test
-    public void testMain() throws IOException {
+    public void testMain() throws IOException, CsvDataTypeMismatchException, CsvRequiredFieldEmptyException {
         System.out.println("This is test");
         App.main(new String[]{"Test"});
     }
