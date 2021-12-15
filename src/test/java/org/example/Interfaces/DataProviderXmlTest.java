@@ -33,13 +33,13 @@ public class DataProviderXmlTest extends TestCase {
 
 
     public void testSelectRecords() {
-        List<Car> cars= new DataProviderXml().selectRecords();
+        List<Car> cars= new DataProviderXml().selectRecords(Car.class);
         cars.forEach(car -> logger.info(car));
         Assert.assertNotNull(cars);
     }
 
     public void testGetRecordById() {
-        List<Car> cars= new DataProviderXml().selectRecords();
+        List<Car> cars= new DataProviderXml().selectRecords(Car.class);
         Car test = cars.get(2);
         Car car = new DataProviderXml().getRecordById(test.getId());
         logger.info(car.toString());
@@ -53,9 +53,9 @@ public class DataProviderXmlTest extends TestCase {
     }
 
     public void testDeleteRecord() {
-        List<Car> cars = new DataProviderXml().selectRecords();
+        List<Car> cars = new DataProviderXml().selectRecords(Car.class);
         Assert.assertTrue(new DataProviderXml().deleteRecord(cars.get(0).getId()));
-        List<Car> test = new DataProviderXml().selectRecords();
+        List<Car> test = new DataProviderXml().selectRecords(Car.class);
         cars.remove(0);
         Assert.assertEquals(cars, test);
     }

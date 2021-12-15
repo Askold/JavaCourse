@@ -1,7 +1,6 @@
 package org.example.Interfaces;
 
 import com.opencsv.CSVWriter;
-import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -12,10 +11,14 @@ import org.apache.logging.log4j.Logger;
 import org.example.App;
 import org.example.Exceptions.NullObjectException;
 import org.example.Models.Car;
+import org.example.Models.HistoryContent;
 import org.example.Utils.ConfigurationUtil;
 
-import java.io.*;
-import java.util.Iterator;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,23 +29,30 @@ public class DataProviderCsv extends DataProvider {
 
 
     @Override
-    public <T> boolean saveRecords(List<T> cars) {
+    public <T> boolean saveRecords(List<T> beans) {
+        HistoryContent historyRecord = new HistoryContent(getClass().toString(),
+                Thread.currentThread().getStackTrace()[1].getMethodName());
         Writer writer;
         try {
             writer = new FileWriter(initDataSource(), false);
-            StatefulBeanToCsv<Car> beanToCsv = new StatefulBeanToCsvBuilder<Car>(writer)
+            StatefulBeanToCsv<T> beanToCsv = new StatefulBeanToCsvBuilder<T>(writer)
                     .withLineEnd(CSVWriter.DEFAULT_LINE_END)
                     .build();
-            beanToCsv.write((Iterator<Car>) cars);
+            beanToCsv.write(beans);
             writer.close();
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
             logger.error(e.getClass().getName() + e.getMessage());
+            historyRecord.setStatus(HistoryContent.Status.FAULT);
+            addHistoryRecord(historyRecord);
             return false;
         }
+        addHistoryRecord(historyRecord);
         return true;
     }
     @Override
     boolean createRecord(Car car) {
+        HistoryContent historyRecord = new HistoryContent(getClass().toString(),
+                Thread.currentThread().getStackTrace()[1].getMethodName());
         Writer wr;
         try {
             wr = new FileWriter(initDataSource(), true);
@@ -54,34 +64,34 @@ public class DataProviderCsv extends DataProvider {
             writer.close();
         } catch (IOException | CsvDataTypeMismatchException | CsvRequiredFieldEmptyException e) {
             logger.error(e.getClass().getName() + e.getMessage());
+            historyRecord.setStatus(HistoryContent.Status.FAULT);
+            addHistoryRecord(historyRecord);
             return false;
         }
+        addHistoryRecord(historyRecord);
         return true;
     }
 
 
     @Override
-    public List<Car> selectRecords()  {
-        FileReader reader = null;
+    public <T> List<T> selectRecords(Class<?> type)  {
+        List<T> beanToCsv = new ArrayList<>();
         try {
-            reader = new FileReader(initDataSource());
+            FileReader reader = new FileReader(initDataSource());
+            beanToCsv = new CsvToBeanBuilder(reader)
+                    .withType(type)
+                    .build().parse();
         } catch (IOException e) {
             logger.error(e.getClass().getName() + e.getMessage());
         }
-        assert reader != null;
-        CsvToBean<Car> beanToCsv = new CsvToBeanBuilder<Car>(reader)
-                .withType(Car.class)
-                .build();
-
-        return beanToCsv.parse();
+        return beanToCsv;
     }
-
 
     @Override
     Car getRecordById(long id) {
-        List<Car> listOfCars = selectRecords();
+        List<Car> listOfCars = selectRecords(Car.class);
         Stream<Car> streamFromCars = listOfCars.stream();
-        List<Car> result = null;
+        List<Car> result;
         try {
             result = streamFromCars.filter((car -> car.getId() == id))
                     .collect(Collectors.toList());
@@ -95,20 +105,35 @@ public class DataProviderCsv extends DataProvider {
 
     @Override
     boolean updateRecord(Car car) {
+        HistoryContent historyRecord = new HistoryContent(getClass().toString(),
+                Thread.currentThread().getStackTrace()[1].getMethodName());
         Car beanToUpdate = getRecordById(car.getId());
         if (!beanToUpdate.equals(car)) {
-            if (!deleteRecord(car.getId())) return false;
+            if (!deleteRecord(car.getId())) {
+                historyRecord.setStatus(HistoryContent.Status.FAULT);
+                addHistoryRecord(historyRecord);
+                return false;
+            }
+            addHistoryRecord(historyRecord);
             return createRecord(car);
         }
+        addHistoryRecord(historyRecord);
         return true;
     }
 
     @Override
     boolean deleteRecord(long id) {
+        HistoryContent historyRecord = new HistoryContent(getClass().toString(),
+                Thread.currentThread().getStackTrace()[1].getMethodName());
         Car beanToRemove = getRecordById(id);
-        if (beanToRemove == null) return false;
-        List<Car> listOfCars = selectRecords();
+        if (beanToRemove == null) {
+            historyRecord.setStatus(HistoryContent.Status.FAULT);
+            addHistoryRecord(historyRecord);
+            return false;
+        }
+        List<Car> listOfCars = selectRecords(Car.class);
         listOfCars.removeIf(bean -> bean.equals(beanToRemove));
+        addHistoryRecord(historyRecord);
         return saveRecords(listOfCars);
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 public class DataProviderCsvTest {
     @Test
     public void testSelectRecords()  {
-        List<Car> cars= new DataProviderCsv().selectRecords();
+        List<Car> cars= new DataProviderCsv().selectRecords(Car.class);
         cars.forEach(System.out::println);
     }
 
@@ -24,13 +24,13 @@ public class DataProviderCsvTest {
         );
         System.out.println(cars.getClass());
         new DataProviderCsv().saveRecords(cars);
-        List<Car> test= new DataProviderCsv().selectRecords();
+        List<Car> test= new DataProviderCsv().selectRecords(Car.class);
         Assert.assertEquals(cars, test);
     }
 
     @Test
     public void testGetRecordById() {
-        List<Car> cars= new DataProviderCsv().selectRecords();
+        List<Car> cars= new DataProviderCsv().selectRecords(Car.class);
         Car test = cars.get(2);
         Car car = new DataProviderCsv().getRecordById(test.getId());
         Assert.assertEquals(test, car);
@@ -38,9 +38,9 @@ public class DataProviderCsvTest {
 
     @Test
     public void testDeleteRecord() {
-        List<Car> cars = new DataProviderCsv().selectRecords();
+        List<Car> cars = new DataProviderCsv().selectRecords(Car.class);
         Assert.assertTrue(new DataProviderCsv().deleteRecord(cars.get(0).getId()));
-        List<Car> test = new DataProviderCsv().selectRecords();
+        List<Car> test = new DataProviderCsv().selectRecords(Car.class);
         cars.remove(0);
         Assert.assertEquals(cars, test);
     }

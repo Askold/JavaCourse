@@ -46,7 +46,7 @@ public class DataProviderXml extends DataProvider {
 
     @Override
     boolean createRecord(Car car) {
-        List<Car> data = selectRecords();
+        List<Car> data = selectRecords(Car.class);
         data.add(car);
         saveRecords(data);
         return true;
@@ -56,15 +56,15 @@ public class DataProviderXml extends DataProvider {
     boolean deleteRecord(long id) {
         Car beanToRemove = getRecordById(id);
         if (beanToRemove == null) return false;
-        List<Car> listOfCars = selectRecords();
+        List<Car> listOfCars = selectRecords(Car.class);
         listOfCars.removeIf(bean -> bean.equals(beanToRemove));
         return saveRecords(listOfCars);
     }
 
     @Override
-    public List<Car> selectRecords() {
+    public <T> List<T> selectRecords(Class<?> type) {
         Serializer serializer = new Persister();
-        File result = null;
+        File result;
         CarsList carsList = null;
         try {
             result = new File(initDataSource());
@@ -72,12 +72,12 @@ public class DataProviderXml extends DataProvider {
         } catch (Exception e) {
             logger.debug(e.getClass().getName() + e.getMessage());
         }
-        return carsList.getData();
+        return (List<T>) carsList.getData();
     }
 
     @Override
     Car getRecordById(long id) {
-        List<Car> data = selectRecords();
+        List<Car> data = selectRecords(Car.class);
         Stream<Car> streamData = data.stream();
         List<Car> result = null;
         try {

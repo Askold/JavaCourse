@@ -20,11 +20,11 @@ public abstract class DataProvider {
 
     abstract <T> boolean saveRecords(List<T> beans);
 
+    abstract  public <T> List<T> selectRecords(Class<?> type);
+
     abstract boolean createRecord(Car car);
 
     abstract boolean deleteRecord(long id);
-
-    abstract public List<Car> selectRecords();
 
     abstract Car getRecordById(long id);
 

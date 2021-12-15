@@ -23,23 +23,18 @@ public class HistoryContent implements Serializable {
         this.actor = actor;
         setMethodName(methodName);
         setStatus(status);
-        count++;
     }
 
-    public HistoryContent(String className, String methodName, Status status) {
+    public HistoryContent(String className, String methodName) {
         this.className = className;
         setMethodName(methodName);
-        setStatus(status);
-        count++;
     }
 
     public HistoryContent(String className) {
         this.className = className;
-        count++;
     }
 
     public HistoryContent() {
-        count++;
     }
 
     public static int getCount() {
