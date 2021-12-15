@@ -1,4 +1,4 @@
-package org.example.Interfaces;
+package org.example.Models;
 
 import com.google.gson.Gson;
 import com.mongodb.MongoClient;
@@ -9,30 +9,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.example.App;
-import org.example.Models.Car;
-import org.example.Models.HistoryContent;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.util.List;
-
-public abstract class DataProvider {
+public class HistoryContentTest {
     private static final Logger logger = LogManager.getLogger(App.class);
 
-    abstract <T> boolean saveRecords(List<T> beans);
-
-    abstract boolean createRecord(Car car);
-
-    abstract boolean deleteRecord(long id);
-
-    abstract public List<Car> selectRecords();
-
-    abstract Car getRecordById(long id);
-
-    abstract boolean updateRecord(Car car);
-
-    abstract String initDataSource() throws IOException;
-
-    public void addHistoryRecord(HistoryContent test){
+    @Test
+    public void append(){
+        HistoryContent test = new HistoryContent("name", "method", HistoryContent.Status.SUCCESS);
         String testJson = new Gson().toJson(test);
         logger.info(testJson);
         MongoDatabase database = connectToDB();
@@ -59,4 +43,7 @@ public abstract class DataProvider {
         logger.info("Collection received");
         return collection;
     }
+
+
+
 }

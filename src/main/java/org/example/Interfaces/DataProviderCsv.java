@@ -10,7 +10,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.App;
-import org.example.Exception.NullObjectException;
+import org.example.Exceptions.NullObjectException;
 import org.example.Models.Car;
 import org.example.Utils.ConfigurationUtil;
 

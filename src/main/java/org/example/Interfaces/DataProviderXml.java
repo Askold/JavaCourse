@@ -3,9 +3,10 @@ package org.example.Interfaces;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.App;
-import org.example.Exception.NullObjectException;
+import org.example.Exceptions.NullObjectException;
 import org.example.Models.Car;
 import org.example.Models.CarsList;
+import org.example.Models.HistoryContent;
 import org.example.Utils.ConfigurationUtil;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -20,10 +21,12 @@ import java.util.stream.Stream;
 
 public class DataProviderXml extends DataProvider {
     private static final Logger logger = LogManager.getLogger(App.class);
+    HistoryContent historyRecord = new HistoryContent(getClass().toString());
 
     <T> boolean saveRecords(List<T> cars) {
+        historyRecord.setMethodName("saveRecords");
         Serializer serializer = new Persister();
-        File result = null;
+        File result;
         try {
             initDataSource();
             result = new File(initDataSource());
@@ -32,8 +35,11 @@ public class DataProviderXml extends DataProvider {
             serializer.write(carsXml, writer);
         } catch (Exception e) {
             logger.debug(e.getClass().getName() + e.getMessage());
+            historyRecord.setStatus(HistoryContent.Status.FAULT);
+            addHistoryRecord(historyRecord);
             return false;
         }
+        addHistoryRecord(historyRecord);
         return true;
     }
 

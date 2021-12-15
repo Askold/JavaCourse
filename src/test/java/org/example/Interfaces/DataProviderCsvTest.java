@@ -11,7 +11,7 @@ public class DataProviderCsvTest {
     @Test
     public void testSelectRecords()  {
         List<Car> cars= new DataProviderCsv().selectRecords();
-        cars.forEach(car -> System.out.println(car));
+        cars.forEach(System.out::println);
     }
 
     @Test
@@ -22,6 +22,7 @@ public class DataProviderCsvTest {
                 new Car( "Lexus", "IS250", 250),
                 new Car( "BMW", "M3", 300)
         );
+        System.out.println(cars.getClass());
         new DataProviderCsv().saveRecords(cars);
         List<Car> test= new DataProviderCsv().selectRecords();
         Assert.assertEquals(cars, test);
